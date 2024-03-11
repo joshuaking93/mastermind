@@ -9,39 +9,56 @@ class Board
   def initialize
     puts 'Time to Play mastermind'
     @code_breaker_guess_array = []
-    @code_maker_hint_array = ['black', 'white', 'black', 'white']
+    @code_maker_hint_array = []
   end
 
   def update_board(current_guess)
     # should trigger, display all guesses, display hints from previous guesses,
     # check game finished(num of turns left or win condition is true)
     add_to_guess_array(current_guess)
-    add_to_hint_array
+    add_to_hint_array(current_guess)
     display_all_guesses_and_hints
   end
 
-  def add_to_hint_array
+  def add_to_hint_array(current_guess)
+    current_hint = []
+    @secret_code.each_with_index do |code_value, index_of_code|
+      if code_value == current_guess[index_of_code]
+        current_hint.push('black')
+      elsif current_guess.include?(code_value)
+        current_hint.push('white')
+      else
+        current_hint.push('blank')
+      end
+    end
+    p current_hint.shuffle!
   end
+  # push the colors to a temp array and pass it to the place pegs definition after that.
+  # change player class to not have include?COLORLS make it part of the codemaking and then the codebreaker class
+  # try using super or a different way to do that, will clean up the code better and not have to repeat the
+  # place pegs definition
 
   def add_to_guess_array(current_guess)
     @code_breaker_guess_array.push(current_guess)
   end
 
   def display_all_guesses_and_hints
-    puts "\nyour guesses have been           The hints have been\n\n"
-    @code_breaker_guess_array.each do |guess|
-      @code_maker_hint_array.each do |hint|
-        puts "       hint #{hint.join(' ')}"
-      end
-      puts guess.join(' ')
+    puts "\n       your guesses have been                      The hints have been\n\n"
+    @code_breaker_guess_array.each_with_index do |guess, index|
+      puts "guess # #{index + 1} #{guess}}                       hint # #{index + 1} #{@code_maker_hint_array[index]}"
+      # puts guess.join(' ')
     end
+  end
+
+  def place_secret_code(array)
+    @secret_code = array
   end
 end
 
 # class player
 class Player
   COLORS = Set['red', 'blue', 'green', 'orange', 'purple', 'yellow']
-  def place_row_of_pegs(array, hide_answer = false)
+  def place_row_of_colors(array, hide_answer = false)
     while array.length < 4
       color = if hide_answer == true
                 $stdin.noecho(&:gets).chomp
@@ -50,6 +67,19 @@ class Player
               end
       array.push(color) if COLORS.include?(color)
     end
+  end
+
+  def place_row_of_hints(array)
+    @secret_code_array.each_with_index do |code_value, index_of_code|
+      if code_value == current_guess[index_of_code]
+        current_hint.push('black')
+      elsif current_guess.include?(code_value)
+        current_hint.push('white')
+      else
+        current_hint.push('blank')
+      end
+    end
+    p current_hint.shuffle!
   end
 end
 
@@ -60,6 +90,12 @@ class CodeMaker < Player
     puts 'time to make a new code, if it is a human playing, please get your opponent to look away while you decide'
     puts 'if it is a computer codebreaker please start to try to crack the code'
     puts "the colors are #{COLORS}"
+  end
+
+  def give_hint
+    hint_array = []
+    place_row_of_hints(hint_array)
+    hint_array
   end
 end
 
@@ -80,10 +116,10 @@ class HumanCodeMaker < CodeMaker
   def create_secret_code
     return %w[red blue green yellow]
     puts 'please make a code that will be guessed, hide the screen from the code breaker while you make your selection'
-    secret_code_array = []
-    place_row_of_pegs(secret_code_array, true)
-    puts "you chose: #{secret_code_array}"
-    secret_code_array
+    @secret_code_array = []
+    place_row_of_colors(@secret_code_array, true)
+    puts "you chose: #{@secret_code_array}"
+    @secret_code_array
   end
 end
 
@@ -102,7 +138,7 @@ class HumanCodeBreaker < CodeBreaker
   def make_guess
     guess_array = []
     super
-    place_row_of_pegs(guess_array)
+    place_row_of_colors(guess_array)
     guess_array
   end
 end
@@ -115,17 +151,10 @@ end
 game = Board.new
 code_maker = HumanCodeMaker.new
 code_breaker = HumanCodeBreaker.new
-p code_maker.create_secret_code
-game.update_board(code_breaker.make_guess)
-
-# board class in charge of board state, num of turns left,
-
-# player class that has general rules for ALL players and not just codemaker or breaker.
-
-# codemaker class that has some basic rules for the codemaker
-# computer codemaker as subclass of codemaker
-# human codemaker as subclass of codemaker
-
-# codebreaker class that follows general rules of code breaking
-# computer codebreaker as subclass of codebreaker
-# human codebreaker as subclass of code breaker
+secret_code = code_maker.create_secret_code
+game.place_secret_code(secret_code)
+#game.place_secret_code(code_maker.create_secret_code)
+new_guess = code_breaker.make_guess
+game.update_board(new_guess)
+new_guess = code_breaker.make_guess
+game.update_board(new_guess)
