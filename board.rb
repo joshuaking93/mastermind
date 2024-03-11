@@ -10,13 +10,14 @@ class Board
   end
 
   def update_board(current_guess, current_hint)
-    # should trigger, display all guesses, display hints from previous guesses,
-    # check game finished(num of turns left or win condition is true)
-    #check win before check turns left
     add_to_guess_array(current_guess)
     add_to_hint_array(current_hint)
     display_all_guesses_and_hints
+  end
+
+  def check_end_of_game(current_hint)
     update_turns_left
+    check_win(current_hint)
   end
 
   def add_to_hint_array(current_hint)
@@ -36,6 +37,19 @@ class Board
 
   def update_turns_left
     @turns_left -= 1
+    if @turns_left.zero?
+      puts 'there are no more turns left, the code maker has won'
+      return true
+    end
     puts "\n there are #{@turns_left} turns left"
+    false
+  end
+
+  def check_win(current_hint)
+    if current_hint.all? { |color| color == 'black' }
+      puts 'congrats you won'
+      return true
+    end
+    false
   end
 end

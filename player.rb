@@ -26,7 +26,7 @@ class Player
     @secret_code_array.each_with_index do |code_value, index_of_code|
       current_hint.push(get_type_of_hint(code_value, index_of_code, current_guess))
     end
-    current_hint.shuffle!
+    current_hint.sort!
   end
 
   def get_type_of_hint(code_value, index_of_code, current_guess)
@@ -44,9 +44,11 @@ end
 class CodeMaker < Player
   def initialize
     super
-    puts 'time to make a new code, if it is a human playing, please get your opponent to look away while you decide'
-    puts 'if it is a computer codebreaker please start to try to crack the code'
-    puts "the colors are #{COLORS}"
+    puts 'time to make a new code, if you are playing with another human, please get your opponent to look away while
+    you decide
+    if it is a computer code maker please start to try to crack the code'
+    puts "the colors are
+    #{COLORS.join(' ')}"
   end
 
   def give_hint(current_guess)
