@@ -9,14 +9,30 @@ class Board
   def initialize
     puts 'Time to Play mastermind'
     @code_breaker_guess_array = []
-    @code_maker_hint_array = []
+    @code_maker_hint_array = ['black', 'white', 'black', 'white']
   end
 
   def update_board(current_guess)
-    # should trigger, display guesses, display hints from previous guesses, check num of turns left,
-    puts "\nyour guesses have been\n\n"
+    # should trigger, display all guesses, display hints from previous guesses,
+    # check game finished(num of turns left or win condition is true)
+    add_to_guess_array(current_guess)
+    add_to_hint_array
+    display_all_guesses_and_hints
+  end
+
+  def add_to_hint_array
+  end
+
+  def add_to_guess_array(current_guess)
     @code_breaker_guess_array.push(current_guess)
+  end
+
+  def display_all_guesses_and_hints
+    puts "\nyour guesses have been           The hints have been\n\n"
     @code_breaker_guess_array.each do |guess|
+      @code_maker_hint_array.each do |hint|
+        puts "       hint #{hint.join(' ')}"
+      end
       puts guess.join(' ')
     end
   end
