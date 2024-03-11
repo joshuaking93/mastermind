@@ -12,7 +12,7 @@ game = Board.new
 #        4: computer code maker vs computer code breaker"
 code_maker = HumanCodeMaker.new
 code_breaker = HumanCodeBreaker.new
-code_maker.create_secret_code
+secret_code = code_maker.create_secret_code
 game_end = false
 while game_end == false
   new_guess = code_breaker.make_guess

@@ -23,16 +23,21 @@ class Player
 
   def place_row_of_hints(current_guess)
     current_hint = []
-    @secret_code_array.each_with_index do |code_value, index_of_code|
-      current_hint.push(get_type_of_hint(code_value, index_of_code, current_guess))
+    @secret_code_array.each_with_index do |secret_code_value, index_of_code|
+      current_hint.push(get_type_of_hint(secret_code_value, index_of_code, current_guess))
     end
     current_hint.sort!
   end
 
-  def get_type_of_hint(code_value, index_of_code, current_guess)
-    if code_value == current_guess[index_of_code]
+  def get_type_of_hint(secret_code_value, index_of_code, current_guess)
+    if secret_code_value == current_guess[index_of_code]
       'black'
-    elsif current_guess.include?(code_value)
+      # figure this out tomorrow!!
+      # figure out how to splice the array without modifying it and then add that method to the black or white options
+      # for each element of the secret code, check if the guess has the same color in the same spot, if it does then black
+      # if it isn't check the other elements of the guess to see if it has the same color anywhere else and splice the guess down
+      # if black or white
+      elsif current_guess[index_of_code].include?()
       'white'
     else
       'blank'
@@ -71,10 +76,10 @@ end
 # human code maker class inherits from codemaker and player
 class HumanCodeMaker < CodeMaker
   def create_secret_code
-    return @secret_code_array = %w[red blue green yellow]
+    return @secret_code_array = %w[red blue red blue]
     puts 'please make a code that will be guessed, hide the screen from the code breaker while you make your selection'
     @secret_code_array = []
-    place_row_of_colors(true)
+    @secret_code_array = place_row_of_colors(true)
     puts "you chose: #{@secret_code_array}"
     @secret_code_array
   end
