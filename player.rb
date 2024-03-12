@@ -41,23 +41,44 @@ class CodeMaker < Player
     current_hint = []
     temp_secret_code = @secret_code_array.dup
     temp_current_guess = current_guess.dup
-    current_guess.each_with_index do |guess_value, index_of_guess|
-      current_hint.push(get_type_of_hint(guess_value, index_of_guess, temp_secret_code, temp_current_guess))
-    end
+    # current_guess.each_with_index do |guess_value, index_of_guess|
+    get_type_of_hint(temp_secret_code, temp_current_guess, current_hint)
+    puts "outer loop #{current_hint.join(' ')}"
+    # end
     puts "this is temp secret code #{temp_secret_code}"
     puts "this is temp current guess #{temp_current_guess}"
-    #add sort back to this
-    current_hint.sort!
+    current_hint.compact!
   end
 
-  def get_type_of_hint(guess_value, index_of_guess, temp_secret_code, temp_current_guess)
+  def get_type_of_hint(temp_secret_code, temp_current_guess, current_hint)
+    temp_current_guess.each_with_index do |guess_color, index|
+      current_hint.push(get_black_pegs(guess_color, index, temp_secret_code, temp_current_guess))
+    end
+    temp_current_guess.each_with_index do |guess_color, index|
+      current_hint.push(get_white_pegs(temp_secret_code, guess_color, index, temp_current_guess))
+    end
+    temp_current_guess.each_with_index do |guess_color, index|
+      current_hint.push(get_blank_pegs(guess_color))
+    end
+  end
+
+  def get_black_pegs(guess_value, index_of_guess, temp_secret_code, temp_current_guess)
     if guess_value == @secret_code_array[index_of_guess]
       temp_secret_code[index_of_guess] = 'removed'
-      temp_current_guess[index_of_guess] = 'removed'
+      temp_current_guess[index_of_guess] = 'removed!'
       'black'
-    elsif temp_secret_code.include?(guess_value)
+    end
+  end
+
+  def get_white_pegs(temp_secret_code, guess_value, index_of_guess, temp_current_guess)
+    if temp_secret_code.include?(guess_value)
+      temp_current_guess[index_of_guess] = 'REMOVED'
       'white'
-    else
+    end
+  end
+
+  def get_blank_pegs(guess_value)
+    if COLORS.include?(guess_value)
       'blank'
     end
   end
@@ -78,7 +99,7 @@ end
 # human code maker class inherits from codemaker and player
 class HumanCodeMaker < CodeMaker
   def create_secret_code
-    return @secret_code_array = %w[red blue red blue]
+    return @secret_code_array = %w[red blue green yellow]
     puts 'please make a code that will be guessed, hide the screen from the code breaker while you make your selection'
     @secret_code_array = []
     @secret_code_array = place_row_of_colors(true)
