@@ -20,29 +20,6 @@ class Player
       color_array.push(current_color) if COLORS.include?(current_color)
     end
   end
-
-  def place_row_of_hints(current_guess)
-    current_hint = []
-    @secret_code_array.each_with_index do |secret_code_value, index_of_code|
-      current_hint.push(get_type_of_hint(secret_code_value, index_of_code, current_guess))
-    end
-    current_hint.sort!
-  end
-
-  def get_type_of_hint(secret_code_value, index_of_code, current_guess)
-    if secret_code_value == current_guess[index_of_code]
-      'black'
-      # figure this out tomorrow!!
-      # figure out how to splice the array without modifying it and then add that method to the black or white options
-      # for each element of the secret code, check if the guess has the same color in the same spot, if it does then black
-      # if it isn't check the other elements of the guess to see if it has the same color anywhere else and splice the guess down
-      # if black or white
-      elsif current_guess[index_of_code].include?()
-      'white'
-    else
-      'blank'
-    end
-  end
 end
 
 # class code maker inherits from player class
@@ -58,6 +35,31 @@ class CodeMaker < Player
 
   def give_hint(current_guess)
     place_row_of_hints(current_guess)
+  end
+
+  def place_row_of_hints(current_guess)
+    current_hint = []
+    temp_secret_code = @secret_code_array.dup
+    temp_current_guess = current_guess.dup
+    current_guess.each_with_index do |guess_value, index_of_guess|
+      current_hint.push(get_type_of_hint(guess_value, index_of_guess, temp_secret_code, temp_current_guess))
+    end
+    puts "this is temp secret code #{temp_secret_code}"
+    puts "this is temp current guess #{temp_current_guess}"
+    #add sort back to this
+    current_hint.sort!
+  end
+
+  def get_type_of_hint(guess_value, index_of_guess, temp_secret_code, temp_current_guess)
+    if guess_value == @secret_code_array[index_of_guess]
+      temp_secret_code[index_of_guess] = 'removed'
+      temp_current_guess[index_of_guess] = 'removed'
+      'black'
+    elsif temp_secret_code.include?(guess_value)
+      'white'
+    else
+      'blank'
+    end
   end
 end
 

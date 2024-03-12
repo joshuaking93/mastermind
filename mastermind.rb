@@ -16,7 +16,7 @@ secret_code = code_maker.create_secret_code
 game_end = false
 while game_end == false
   new_guess = code_breaker.make_guess
-  new_hint = code_maker.give_hint(new_guess)
+  new_hint = code_maker.place_row_of_hints(new_guess)
   game.update_board(new_guess, new_hint)
   game_end = game.check_end_of_game(new_hint)
 end
