@@ -26,6 +26,7 @@ end
 class CodeMaker < Player
   def initialize
     super
+    @secret_code_array = []
     puts 'time to make a new code, if you are playing with another human, please get your opponent to look away while
     you decide
     if it is a computer code maker please start to try to crack the code'
@@ -41,16 +42,11 @@ class CodeMaker < Player
     current_hint = []
     temp_secret_code = @secret_code_array.dup
     temp_current_guess = current_guess.dup
-    # current_guess.each_with_index do |guess_value, index_of_guess|
-    get_type_of_hint(temp_secret_code, temp_current_guess, current_hint)
-    puts "outer loop #{current_hint.join(' ')}"
-    # end
-    puts "this is temp secret code #{temp_secret_code}"
-    puts "this is temp current guess #{temp_current_guess}"
+    get_color_of_hint(temp_secret_code, temp_current_guess, current_hint)
     current_hint.compact!
   end
 
-  def get_type_of_hint(temp_secret_code, temp_current_guess, current_hint)
+  def get_color_of_hint(temp_secret_code, temp_current_guess, current_hint)
     temp_current_guess.each_with_index do |guess_color, index|
       current_hint.push(get_black_pegs(guess_color, index, temp_secret_code, temp_current_guess))
     end
@@ -99,11 +95,8 @@ end
 # human code maker class inherits from codemaker and player
 class HumanCodeMaker < CodeMaker
   def create_secret_code
-    return @secret_code_array = %w[red blue green yellow]
     puts 'please make a code that will be guessed, hide the screen from the code breaker while you make your selection'
-    @secret_code_array = []
     @secret_code_array = place_row_of_colors(true)
-    puts "you chose: #{@secret_code_array}"
     @secret_code_array
   end
 end
