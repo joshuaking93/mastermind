@@ -70,13 +70,16 @@ class CodeMaker < Player
     return unless temp_secret_code.include?(guess_value)
 
     temp_current_guess[index_of_guess] = 'REMOVED'
+    temp_secret_code.each_with_index do |color, index_of_code|
+      temp_secret_code[index_of_code] = 'removed' if color == guess_value
+    end
     'white'
   end
 
   def get_blank_pegs(guess_value)
     return unless COLORS.include?(guess_value)
 
-    'blank'
+    'miss!'
   end
 end
 

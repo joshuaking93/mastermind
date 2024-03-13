@@ -10,9 +10,23 @@ game = Board.new
 #        2: human code maker vs computer code breaker
 #        3: computer code maker vs human code breaker
 #        4: computer code maker vs computer code breaker"
-code_maker = HumanCodeMaker.new
-code_breaker = HumanCodeBreaker.new
-secret_code = code_maker.create_secret_code
+
+puts "chose whether you want
+1: human vs human
+2: human vs computer"
+choice = gets.chomp
+case choice
+when '1'
+  puts 'you chose human vs human'
+  code_maker = HumanCodeMaker.new
+  code_breaker = HumanCodeBreaker.new
+when '2'
+  puts 'you chose human vs computer'
+  code_maker = ComputerCodeMaker.new
+  code_breaker = HumanCodeBreaker.new
+end
+
+code_maker.create_secret_code
 game_end = false
 while game_end == false
   new_guess = code_breaker.make_guess
