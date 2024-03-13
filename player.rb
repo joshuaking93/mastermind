@@ -59,24 +59,24 @@ class CodeMaker < Player
   end
 
   def get_black_pegs(guess_value, index_of_guess, temp_secret_code, temp_current_guess)
-    if guess_value == @secret_code_array[index_of_guess]
-      temp_secret_code[index_of_guess] = 'removed'
-      temp_current_guess[index_of_guess] = 'removed!'
-      'black'
-    end
+    return unless guess_value == @secret_code_array[index_of_guess]
+
+    temp_secret_code[index_of_guess] = 'removed'
+    temp_current_guess[index_of_guess] = 'removed!'
+    'black'
   end
 
   def get_white_pegs(temp_secret_code, guess_value, index_of_guess, temp_current_guess)
-    if temp_secret_code.include?(guess_value)
-      temp_current_guess[index_of_guess] = 'REMOVED'
-      'white'
-    end
+    return unless temp_secret_code.include?(guess_value)
+
+    temp_current_guess[index_of_guess] = 'REMOVED'
+    'white'
   end
 
   def get_blank_pegs(guess_value)
-    if COLORS.include?(guess_value)
-      'blank'
-    end
+    return unless COLORS.include?(guess_value)
+
+    'blank'
   end
 end
 
@@ -87,8 +87,18 @@ class ComputerCodeMaker < CodeMaker
     puts 'computer is deciding a random assignment of colors'
   end
 
+  def place_row_of_colors
+    color_array = []
+    while color_array.length < 4
+      color_array.push(COLORS.to_a[rand(6)])
+      p color_array
+    end
+    color_array
+  end
+
   def create_secret_code
     puts 'the comp is making the secret code'
+    @secret_code_array = place_row_of_colors
   end
 end
 
@@ -97,7 +107,6 @@ class HumanCodeMaker < CodeMaker
   def create_secret_code
     puts 'please make a code that will be guessed, hide the screen from the code breaker while you make your selection'
     @secret_code_array = place_row_of_colors(true)
-    @secret_code_array
   end
 end
 
